@@ -1,0 +1,17 @@
+.vs/
+
+bin/
+obj/
+
+Thumbs.db 
+
+
+.nuget/
+
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+*.log
