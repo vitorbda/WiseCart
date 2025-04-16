@@ -1,0 +1,65 @@
+﻿<div id="divBtnsFooter" class="fixed-bottom-container">
+    <div class="button-group">
+        <button type="button" class="btn btn-warning btn-fixed-bottom" onclick="_quagga.ToggleScanner()">
+            <i class="fas fa-barcode"></i> Escanear
+        </button>
+        <button type="button" class="btn btn-secondary btn-fixed-bottom" onclick="modalVar.OpenModal()">
+            <i class="fas fa-barcode"></i> Inserir Manual
+        </button>
+    </div>
+</div>
+
+<style>
+    /* Container principal */
+    .fixed-bottom-container {
+        position: fixed; 
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        padding: 0 15px; 
+        z-index: 1000; 
+    }
+
+    /* Grupo de botões */
+    .button-group { 
+        display: flex;
+        justify-content: center; 
+        gap: 15px; /* Espaço entre os botõe s */  
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Estilo dos botões */
+    .btn-fixed-bottom {
+        flex: 1; /* Faz os botões dividirem o espaço igualmente */
+        min-width: 200px; /* Largura mínima para cada botão */
+        height: 50px;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Espaço para evitar que o conteúdo fique escondido */
+    body {
+        padding-bottom: 100px;
+    }
+</style>
+
+<script>
+
+    $(function() {
+        btnsFooter.Start();
+    })
+
+    var btnsFooter = {
+        divBtnsFooter: $('#divBtnsFooter'),
+
+        Start: function() {
+            if (section.sectionIsActive) 
+                this.divBtnsFooter.show();
+            else
+                this.divBtnsFooter.hide();
+            
+        }
+
+    }
+</script>

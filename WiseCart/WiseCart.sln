@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiseCart.Domain", "WiseCart.Domain\WiseCart.Domain.csproj", "{42581A3E-AFD0-4928-B844-4F0185E20097}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiseCart.Application", "WiseCart.Application\WiseCart.Application.csproj", "{790406F0-232B-4BEB-9AC6-7C4A686248EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiseCart.Infra", "WiseCart.Infra\WiseCart.Infra.csproj", "{F7B81E31-F199-4779-8453-7F610090FEC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiseCart.CrossCutting", "WiseCart.CrossCutting\WiseCart.CrossCutting.csproj", "{7A97C7CC-0152-49C8-9053-776B65D0F326}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiseCart.API", "WiseCart.API\WiseCart.API.csproj", "{6A58201F-8E09-4CA0-B00B-C0EA79C62330}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiseCart.Front", "WiseCart.Front\WiseCart.Front.csproj", "{B36CD001-1196-445C-90E7-F6B062B05B3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{5483F7F5-949D-4831-A8F0-E4830BB4C826}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{7FD6D801-E93B-403C-A4EC-C0DB3E18EFA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42581A3E-AFD0-4928-B844-4F0185E20097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42581A3E-AFD0-4928-B844-4F0185E20097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42581A3E-AFD0-4928-B844-4F0185E20097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42581A3E-AFD0-4928-B844-4F0185E20097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{790406F0-232B-4BEB-9AC6-7C4A686248EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{790406F0-232B-4BEB-9AC6-7C4A686248EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{790406F0-232B-4BEB-9AC6-7C4A686248EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{790406F0-232B-4BEB-9AC6-7C4A686248EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B81E31-F199-4779-8453-7F610090FEC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B81E31-F199-4779-8453-7F610090FEC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B81E31-F199-4779-8453-7F610090FEC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B81E31-F199-4779-8453-7F610090FEC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A97C7CC-0152-49C8-9053-776B65D0F326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A97C7CC-0152-49C8-9053-776B65D0F326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A97C7CC-0152-49C8-9053-776B65D0F326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A97C7CC-0152-49C8-9053-776B65D0F326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A58201F-8E09-4CA0-B00B-C0EA79C62330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A58201F-8E09-4CA0-B00B-C0EA79C62330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A58201F-8E09-4CA0-B00B-C0EA79C62330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A58201F-8E09-4CA0-B00B-C0EA79C62330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B36CD001-1196-445C-90E7-F6B062B05B3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36CD001-1196-445C-90E7-F6B062B05B3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B36CD001-1196-445C-90E7-F6B062B05B3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B36CD001-1196-445C-90E7-F6B062B05B3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{42581A3E-AFD0-4928-B844-4F0185E20097} = {5483F7F5-949D-4831-A8F0-E4830BB4C826}
+		{790406F0-232B-4BEB-9AC6-7C4A686248EF} = {5483F7F5-949D-4831-A8F0-E4830BB4C826}
+		{F7B81E31-F199-4779-8453-7F610090FEC4} = {5483F7F5-949D-4831-A8F0-E4830BB4C826}
+		{7A97C7CC-0152-49C8-9053-776B65D0F326} = {5483F7F5-949D-4831-A8F0-E4830BB4C826}
+		{6A58201F-8E09-4CA0-B00B-C0EA79C62330} = {5483F7F5-949D-4831-A8F0-E4830BB4C826}
+		{B36CD001-1196-445C-90E7-F6B062B05B3A} = {7FD6D801-E93B-403C-A4EC-C0DB3E18EFA8}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,237 @@
+﻿@model WiseCart.Front.Models.ViewModel.ShoppingViewModel
+
+
+<div class="container mt-4 text-center">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Detalhes da Compra</h4> 
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._dateStart)</label>
+                        @Html.TextBoxFor(model => model._dateStart, new { @class = "form-control text-center", required = "required", disabled = "true" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._dateEnd)</label>
+                        @Html.TextBoxFor(model => model._dateEnd, new { @class = "form-control text-center", required = "required", disabled = "true" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._market_Name)</label>
+                        @Html.TextBoxFor(model => model._market_Name, new { @class = "form-control text-center", required = "required", disabled = "true" })
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._quantityItens)</label>
+                        @Html.TextBoxFor(model => model._quantityItens, new { @class = "form-control text-center", required = "required", disabled = "true", id = "quantity" })
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Valor Total</label>
+                        @Html.TextBoxFor(model => model._valorTotal, new { @class = "form-control text-center", required = "required", disabled = "true", id = "totalValue" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <button class="btn btn-danger" id="btnEndSection" onclick="postShopping.Post()">Finalizar</button>
+                </div>                
+            </div>
+
+        </div>
+    </div>
+    
+</div>
+
+<div id="resultsPurchase">
+    @foreach (var item in Model.Purchases)
+    {
+        <div class="text-center">
+            @{item._shoppingIsActive = Model._active;}
+            @await Html.PartialAsync("~/Views/Shared/Shopping/_PurchaseViewCard.cshtml", item)
+        </div>
+    }
+</div>
+
+
+
+<partial name="~/Views/Shared/Shopping/_ButtonFooter.cshtml" />
+
+<partial name="_modalCamera" />
+
+<script>
+
+    $(function() { 
+        section.SectionStart(); 
+    });
+
+    var purchaseClass = {
+        get Id() { return this.cardParent.attr('purchaseId') },
+        get Price() { return this.GetValElem('Price') },
+        get Quantity() { return this.GetValElem('_quantity') },
+        get UnitOfMeasureId() { return this.GetValElem('UnitOfMeasureId') },
+        get ProductId() { return this.GetValElem('ProductId') },
+        get ShoppingId() { return section.shoppingId },
+
+        get UnitOfMeasure_Abbreviation() { return this.GetValElem('UnitOfMeasure_Abbreviation') },
+        get elemTotalValue() { return this.GetElem('_valorTotal') },
+
+        cardParent: '', 
+
+        Start: function(id) { this.cardParent = $(`[purchaseId='${id}']`) },
+
+        GetValElem: function(name) { return this.GetElem(name).val() },
+
+        GetElem: function(name) { return this.cardParent.find(`input[name='${name}']`) },
+
+        UpdateValues: function() {
+            const value = 
+                this.UnitOfMeasure_Abbreviation == 'un'
+                ? this.Price * this.Quantity
+                : this.Price;
+
+            this.elemTotalValue.val(parseFloat(value).toFixed(2));
+        },
+
+        ReturnClass: function() {
+            return {
+                Id: this.Id,
+                Price: this.Price,
+                Quantity: this.Quantity,
+                UnitOfMeasureId: this.UnitOfMeasureId,
+                ProductId: this.ProductId,
+                ShoppingId: this.ShoppingId
+            }
+        }
+    }
+
+    var purchaseEdit = {
+        urlEdit: '@Url.Action("UpdatePurchase", "Shopping")',
+        element: '',
+
+        Start: function(elem) {
+            this.element = elem;
+
+            const id = $(this.element).closest('.card').attr('purchaseId');
+
+            purchaseClass.Start(id);
+            this.Send();
+        },
+
+        CallBackStart: function() {
+            purchaseClass.UpdateValues();
+            section.UpdateTotalValue();
+            section.UpdateQuantity();
+        },
+
+        Send: function() {
+            $.post(this.urlEdit, purchaseClass.ReturnClass(), function() {
+                purchaseEdit.CallBackStart();
+            });
+        },
+    }
+
+    var section = {
+        shoppingId: '@Model.Id',
+        endDate: '@Model.DateEnd',
+        divResultsPurchase: $('#resultsPurchase'),
+        inputTotalValue: $('#totalValue'),
+        inputQuantity: $('#quantity'),
+        btnEndSection: $('#btnEndSection'),
+
+        get valueInputs() {
+            return $('.totalValue');
+        },
+
+        get quantityInputs() {
+            return $('.itemQuantity');
+        },
+
+        get sectionIsActive() {
+            return this.endDate.length == 0;
+        },
+
+        Start: function(html) {
+            this.InsertPurchase(html);
+            this.UpdateTotalValue();
+            this.UpdateQuantity();
+            this.FocusTop();
+        },
+
+        InsertPurchase: function(html) {
+            this.divResultsPurchase.prepend(html);
+        },
+
+        FocusTop: function() {
+            $('html, body').animate({
+                scrollTop: section.divResultsPurchase.offset().top
+            }, 500);
+        },
+
+        UpdateTotalValue: function() {
+            let value = 0;
+
+            $.each(this.valueInputs, function(i, o) {
+                value += parseFloat($(o).val());
+            });
+
+            this.inputTotalValue.val(value.toFixed(2));
+        },
+
+        UpdateQuantity: function() {
+            let value = 0;
+
+            $.each(this.quantityInputs, function(i, o) {
+                const item = $(o);
+                const uom = item.attr('uom') == 'un';
+
+                value += uom ? parseFloat($(o).val()) : parseInt(1);
+            });
+
+            this.inputQuantity.val(value);
+        },
+
+        SectionStart: function() {
+            if (this.sectionIsActive)
+                this.btnEndSection.show();
+            else
+                this.btnEndSection.hide();
+        }
+    }
+
+    var postShopping = {
+        UrlUpdateEndDate: '@Url.Action("UpdateEndDate", "Shopping")',
+
+        get currentDate() {
+            const currentDate = new Date();
+
+            const offset = currentDate.getTimezoneOffset();
+
+            currentDate.setMinutes(currentDate.getMinutes() - offset);
+
+            const localISOString = currentDate.toISOString();
+
+            return localISOString;
+        },
+
+        Post: function() {
+            Loading.StartLoading();
+            $.get(this.UrlUpdateEndDate + `?shoppingId=${section.shoppingId}&dateEnd=${this.currentDate}`, function() {
+                window.location.href = "@Url.Action("Index", "Shopping")";
+            });
+        }
+    }
+
+
+</script>

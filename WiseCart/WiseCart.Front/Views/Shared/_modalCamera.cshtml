@@ -1,0 +1,363 @@
+﻿<style>
+    #camera video {
+        width: 100%;
+        max-width: 440px;
+        object-fit: cover;
+    }
+</style>
+
+<div class="modal fade" id="modalCamera" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Escanear</h5>
+            </div>
+                <div class="modal-body">
+
+                    <div class="row mb-3" id="divForm">
+                        <input type="hidden" id="inputProductId" />
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Codigo</label>
+                                <input type="number" class="form-control" id="inputCode">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Produto</label>
+                                <input type="text" class="form-control" id="inputProduct">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Marca</label>
+                                <input type="text" class="form-control" id="inputBrand">
+                            </div>
+                        </div>
+                                     
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Preço</label>
+                                <input type="number" class="form-control" id="inputPrice">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Unidade de medida</label>
+                                <select id="selectUOM" class="form-control"></select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Quantidade</label>
+                                <input type="number" class="form-control" id="inputQuantity">
+                            </div>
+                        </div>
+
+                    </div>                
+
+                <div id="camera" style="width: 100%; display: none;"></div>                          
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnTryAgain" style="display: none;" class="btn btn-warning" data-dismiss="modal" onclick="_quagga.ToggleScanner()">Tentar novamente</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" onclick="post.Start()">Enviar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="modalVar.CloseModal()">Close</button>
+            </div>
+        </div>
+    </div>        
+</div>
+
+<script>
+            
+    var post = {
+        urlPostPurchase: '@Url.Action("CreatePurchase", "Shopping")',
+        urlPostProduct: '@Url.Action("CreateProduct", "Shopping")',
+        
+        PurchaseModel: {},
+
+        get productId() {
+            return formProduct.InputProductId.val();
+        },
+
+        Start: function() {
+            this.GetPurchaseModel();
+
+            if (this.productId > 0)
+                this.SendPurchase();
+            else
+                this.SendProduct();
+        },
+
+        CallBackStart: function(html) {
+            modalVar.CloseModal();
+            Loading.StopLoading();
+            section.Start(html);
+        },
+
+        GetPurchaseModel: function() {
+            this.PurchaseModel = {
+                Price: parseFloat(formProduct.InputPrice.val()),
+                Quantity: formProduct.InputQuantity.val(),
+                UnitOfMeasureId: formPurchase.select.val(),
+                ProductId: formProduct.InputProductId.val(),
+                ShoppingId: section.shoppingId
+            }
+        },
+
+        SendPurchase: function() {
+            Loading.StartLoading();
+
+            $.post(this.urlPostPurchase, this.PurchaseModel, function(data) {
+                post.CallBackStart(data);
+            });
+        },
+
+        SendProduct: function() {
+            Loading.StartLoading();
+
+            const model = {
+                Code: formProduct.InputCode.val(),
+                Name: formProduct.InputProduct.val(),
+                Brands: formProduct.InputBrand.val()
+            };
+
+            $.post(this.urlPostProduct, model, function(data) {
+                formProduct.SetProductId(data.id);
+                post.Start();
+            });
+        }
+
+
+        
+    }
+
+    var modalVar = {
+        camera: $('#camera'),
+        modalElem: $('#modalCamera'),
+        formDiv: $('#divForm'),
+        btnTryAgain: $('#btnTryAgain'),
+
+        OpenModal: function(scan) {           
+            if (scan) {
+                this.btnTryAgain.show();
+                this.camera.show();
+                this.HideForm();
+            }
+                
+            else {
+                btnTryAgain
+                formProduct.Start('');
+                this.ShowForm();
+                this.btnTryAgain.hide();
+            }
+                
+            this.modalElem.modal('show');
+        },
+
+        CloseModal: function() {
+            this.modalElem.modal('hide');
+            this.camera.hide();
+            this.HideForm();
+        },
+
+        HideForm: function() {
+            this.formDiv.hide();
+        },
+
+        ShowForm: function() {
+            this.formDiv.show();
+        },
+
+        HideCamera: function() {
+            this.camera.hide();
+        }
+    }
+
+    var formProduct = {
+        urlSendCodeBar: '@Url.Action("CreateProduct", "Shopping")',
+        CodeBar: '',
+        Product: {},
+
+        get hasProduct() {
+            return !!(this.Product.id && this.Product.id > 0);
+        },
+        
+        InputProductId: $('#inputProductId'),
+        InputPrice: $('#inputPrice'),
+        InputQuantity: $('#inputQuantity'),
+        InputProduct: $('#inputProduct'),
+        InputCode: $('#inputCode'),
+        InputBrand: $('#inputBrand'),
+
+        Start: function(codeBar) {
+            this.ClearObject();
+
+            if (codeBar) {
+                this.CodeBar = codeBar;
+                this.SendCodeBar();
+            }
+            else {
+                this.CallBackStart();
+            }          
+        },
+
+        CallBackStart: function() {
+            this.SetFormInputs();
+            this.ApplyDisabled(this.hasProduct);
+            modalVar.ShowForm();
+            modalVar.HideCamera();
+            formPurchase.Start();
+            Loading.StopLoading();
+        },
+       
+        ClearObject: function() {
+            this.Product = {};
+            this.CodeBar = '';
+            this.ApplyDisabled(false);
+            this.SetFormInputs();
+        },
+
+        SendCodeBar: function() {
+            Loading.StartLoading();
+            $.get(this.urlSendCodeBar + '?codeBar=' + this.CodeBar, function(data) {
+                formProduct.Product = data;
+                formProduct.CallBackStart();
+            });
+        },
+
+        SetFormInputs: function() {
+            this.InputProductId.val(this.Product.id ?? '');
+            this.InputCode.val(this.Product.code ?? '');
+            this.InputProduct.val(this.Product.name ?? '');
+            this.InputBrand.val(this.Product.brands ?? '');
+            this.InputPrice.val('');
+            this.InputQuantity.val(1);
+        },
+
+        ApplyDisabled: function(apply) {
+            this.InputCode.attr('disabled', apply);
+            this.InputProduct.attr('disabled', apply);
+            this.InputBrand.attr('disabled', apply);            
+        },
+
+        SetProductId: function(id) {
+            this.InputProductId.val(id);
+        }
+    }
+
+    var formPurchase = {
+        url: '@Url.Action("GetAllUOM", "Shopping")',
+        select: $('#selectUOM'),
+        UOMList: [],
+        UOMOptionsList: [],
+
+        Start: function() {
+            if (!this.UOMList.length)
+                this.GetUOM();
+            else 
+                this.CallBackStart();
+        }, 
+
+        CallBackStart: function() { 
+            this.CreateOptionsList();
+            this.InsertOptions();
+        },
+
+        GetUOM: function() {
+            $.get(formPurchase.url, function(data) {
+                formPurchase.UOMList = data;
+                formPurchase.CallBackStart(); 
+            })
+        }, 
+         
+        CreateOptionsList: function() {
+            const select = this.select;
+             
+            let options = '';
+            $.each(this.UOMList, function(i, o) {
+                options += formPurchase.ReturnOption(o.id, o.abbreviation, i == 0); 
+            })
+
+            this.UOMOptionsList = options;
+        },
+
+        ReturnOption: function(id, name, selected) {
+            return `<option value="${id}" ${selected ? 'selected' : ''}>${name}</option>`
+        },
+
+        InsertOptions: function() {
+            const options = this.UOMOptionsList;
+            this.select.html(options);
+        }
+    }    
+    
+    var _quagga = {
+        scannerActive: false,
+        cameraDiv: $('#camera'),
+
+        ToggleScanner: function() {
+            if (!this.scannerActive) {
+                modalVar.OpenModal(true);
+                this.StartScanner();
+            } 
+            else {
+                 this.StopScanner();
+            }
+        },
+
+        StopScanner: function() {
+            Quagga.stop();
+            this.scannerActive = false;
+        },
+
+        StartScanner: function() {
+            const cameraElement = document.getElementById('camera');
+
+            Quagga.offDetected();
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: cameraElement,
+                    constraints: {
+                        width: { max: 640 },
+                        height:{ max: 480 },
+                        facingMode: "environment",
+                        aspectRatio: { min: 1, max: 2 },
+                        deviceId: window.cameraId
+                    }
+                },
+                decoder: {
+                    readers: ['ean_reader']
+                },
+                locator: {
+                    patchSize: "medium",
+                    halfSample: true
+                },
+                locate: true
+                }, function(err) {
+                    if (err) {
+                        console.error("Erro ao iniciar scanner:", err);
+                        alert("Não foi possível acessar a câmera. Verifique as permissões.");
+                        return;
+                    }
+                    console.log("Scanner iniciado");
+                    _quagga.scannerActive = true;
+                    Quagga.start();
+                });
+
+                Quagga.onDetected(function(result) {
+                    Quagga.stop();
+                    formProduct.Start(result.codeResult.code)
+                    _quagga.scannerActive = false;
+            });
+        }
+    }
+
+    
+
+</script>

@@ -1,0 +1,60 @@
+﻿@model WiseCart.Front.Models.ViewModel.PurchaseViewModel
+
+@{
+
+    var shoppingActive = Model._shoppingIsActive;
+
+
+}
+
+<div class="container mt-4">
+    <div class="card" purchaseId="@Model.Id">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">@Model._product_Name - @Model.Brand</h4>
+            <input type="hidden" value="@Model.ProductId" name="ProductId" />
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model.Price)</label>
+                        @Html.TextBoxFor(model => model.Price, !shoppingActive ?
+                                 (object)new { @class = "form-control text-center", required = "required", disabled = "disabled" } :
+                                 (object)new { @class = "form-control text-center", required = "required", onInput = "purchaseEdit.Start(this)" })
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model.UnitOfMeasure_Abbreviation)</label>
+                        @Html.TextBoxFor(model => model.UnitOfMeasure_Abbreviation, new { @class = "form-control text-center", required = "required", disabled = "true" })
+                        <input type="hidden" name="UnitOfMeasureId" value="@Model.UnitOfMeasureId" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._quantity)</label>
+                        @Html.TextBoxFor(model => model._quantity, !shoppingActive ?
+                                 (object)new { @class = "form-control text-center itemQuantity", required = "required", disabled = "disabled", uom = Model.UnitOfMeasure_Abbreviation } :
+                                 (object)new { @class = "form-control text-center itemQuantity", required = "required", uomId = Model.UnitOfMeasureId, uom = Model.UnitOfMeasure_Abbreviation, onInput = "purchaseEdit.Start(this)" })
+                                 
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">                
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._valorTotal)</label>
+                        @Html.TextBoxFor(model => model._valorTotal, new { @class = "form-control text-center totalValue", required = "required", disabled = "true" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    
+
+</script>
+

@@ -1,0 +1,75 @@
+﻿@model IEnumerable<WiseCart.Front.Models.ViewModel.ShoppingViewModel>
+
+<div class="modal fade text-center" id="startSectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <div id="modal-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Iniciar compras</h5>
+                <a href="#" class="btn btn-primary" onclick="$('#startSectionModal').modal('show')">Iniciar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <h5>Compras em andamento</h5>
+        @if (Model.Where(m => m._active).Count() == 0)
+        {
+            <span>Sem dados</span>
+        }
+    </div>
+</div>
+
+
+    
+
+@foreach (var item in Model.Where(m => m._active))
+{
+    <div class="text-center">
+        @await Html.PartialAsync("~/Views/Shared/Shopping/_ShoppingViewCard.cshtml", item)
+    </div>
+}
+
+<br />
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <h5>Compras anteriores</h5>
+    </div>
+</div>
+
+
+
+
+@foreach (var item in Model.Where(m => !m._active))
+{
+    <div class="text-center">
+        @await Html.PartialAsync("~/Views/Shared/Shopping/_ShoppingViewCard.cshtml", item)
+    </div>
+}
+
+@section Scripts {
+    <script>
+
+
+        $(function() {
+            $.get('@Url.Action("Section", "Shopping")', { userId: 'CEE20780-4E7F-47A4-A9A2-38B4AF10EC99' }, function(data) {
+                $('#modal-container').html(data);
+            });
+        });
+    </script>
+}
+
+
+

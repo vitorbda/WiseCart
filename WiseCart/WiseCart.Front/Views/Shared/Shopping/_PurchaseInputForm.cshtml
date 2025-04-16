@@ -1,0 +1,62 @@
+﻿@model WiseCart.Front.Models.ViewModel.PurchaseViewModel
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">@Model._product_Name</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model.Price)</label>
+                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control text-center", required = "required"})
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model.UnitOfMeasure_Abbreviation)</label>
+                        @Html.TextBoxFor(model => model.UnitOfMeasure_Abbreviation, new { @class = "form-control text-center", required = "required"})
+                        <select id="selectUOM"></select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._quantity)</label>
+                        @Html.TextBoxFor(model => model._quantity, new { @class = "form-control text-center", required = "required"})
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@Html.DisplayNameFor(model => model._valorTotal)</label>
+                        @Html.TextBoxFor(model => model._valorTotal, new { @class = "form-control text-center", required = "required"})
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var urlGetUOM = '@Url.Action("GetAllUOM", "Shopping")';
+
+    function criarSelectDaApi(url, elementoId) {
+        $.get(url, function(data) {
+            var select = $('<select>').attr('id', elementoId).addClass('form-control');
+
+            select.append($('<option>').val('').text('Selecione...'));
+
+            $.each(data, function(i, item) {
+                select.append($('<option>').val(item.id).text(item.nome));
+            });
+
+            $('#container').append(select);
+        });
+    }
+
+    criarSelectDaApi(urlGetUOM, 'selectUOM);
+
+</script>

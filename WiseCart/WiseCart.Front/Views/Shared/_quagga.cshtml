@@ -1,0 +1,15 @@
+﻿
+<partial name="_modalCamera" />
+
+<script>
+
+    var cameraId = null;
+
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+        const cameras = devices.filter(device => device.kind === 'videoinput');
+
+        cameraId = cameras[3].deviceId;
+    })
+
+
+</script>

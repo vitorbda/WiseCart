@@ -1,0 +1,6 @@
+@WiseCart.Core_HostAddress = http://localhost:5045
+
+GET {{WiseCart.Core_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

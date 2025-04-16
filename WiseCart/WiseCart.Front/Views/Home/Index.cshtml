@@ -1,0 +1,45 @@
+﻿@model IEnumerable<WiseCart.Front.Models.ViewModel.ProductViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    /* Estilo para o botão fixo */
+    .btn-fixed-bottom {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 500px;
+        height: 50px;
+        font-size: 1.1rem;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Espaço para evitar que o conteúdo fique escondido */
+    .fixed-bottom-container {
+        padding-bottom: 80px;
+    }
+</style>
+
+<div class="container">
+    <h2>Lista de Produtos</h2>
+
+    <div id="produtos-container" style="margin-bottom: 100px;">
+        <!-- Espaço para o botão fixo -->
+        @foreach (var produto in Model)
+        {
+            await Html.RenderPartialAsync("_FormProduct", produto);
+        }
+    </div>
+</div>
+
+
+<!-- Botão fixo na parte inferior -->
+<div class="fixed-bottom-container">
+    <button type="button" class="btn btn-primary btn-fixed-bottom" onclick="toggleScanner()">
+        <i class="fas fa-barcode"></i> Ler Código de Barras
+    </button>
+</div>
